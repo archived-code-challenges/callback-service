@@ -12,7 +12,7 @@ If the host operating system is MacOS, I've tried to configure the whole thing w
 
 So basically, to **start everything on a MacOS** you must have golang installed:
 
-    compose-local-mac
+    make compose-local-mac
 
 > Any flag-attribute listed when the application starts can be changed at execution time, check [Makefile (line 46)](Makefile#L46) for an extended ilustration.
 > Therefore, the client server could be changed if required:
