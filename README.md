@@ -1,18 +1,22 @@
 # Golang Callback Service
 
+## Requirements
+
+- Golang
+- Docker
+- Docker compose
+
 ## Instructions to run the project
 
-If the host operating system is MacOS, I've tried to configure everything at once ([`make compose-mac`]((Makefile#L46))) but couldn't make work a docker-compose approach [due to networking limitations](https://docs.docker.com/docker-for-mac/networking/#known-limitations-use-cases-and-workarounds) when talking between containers.
+If the host operating system is MacOS, I've tried to configure the whole thing with one command ([`make compose-mac`]((Makefile#L46))) but couldn't make work a docker-compose approach [due to networking limitations](https://docs.docker.com/docker-for-mac/networking/#known-limitations-use-cases-and-workarounds) when talking between containers.
 
-So basically, to **start everything on a MacOS**;
+So basically, to **start everything on a MacOS** you must have golang installed:
 
-First, to start the task-service:
-
-    make go-run
+    compose-local-mac
 
 > Any flag-attribute listed when the application starts can be changed at execution time, check [Makefile (line 46)](Makefile#L46) for an extended ilustration.
 > Therefore, the client server could be changed if required:
-> `make go-run LDFLAGS=--callback-service-address=http://1234host:7777`
+> `make compose-local-mac LDFLAGS=--callback-service-address=http://1234host:7777`
 
 To start the client service that will query the server each 5 seconds and also provide the status of the objects:
 
@@ -27,7 +31,7 @@ To start the client service that will query the server each 5 seconds and also p
 
     make client-start
 
-After a successful execution, the service should be running on port 9090. Hit the endpoint to check that everyithing is running as expected:
+After a successful execution, the service should be running on port 9090. Hit the endpoint to check that all is running as expected:
 
 - [:9090](http://localhost:9090/)
 
@@ -60,7 +64,7 @@ Integration tests (which require both services running) can be run by typing:
     │   └── client-service      # client callbacks API
     ├── doc                     # Documentation, images and helpful files
     └── internal
-        ├── handlers            # HTTP layer
+        ├── handlers            # HTTP layer & integration tests
         ├── middleware
         ├── models              # Business logic
         └── web                 # Framework for common HTTP related tasks

@@ -42,6 +42,9 @@ docker-build: ## Builds the project binary inside a docker image
 docker-run:	## Runs the previosly build docker image
 	@docker run $(PROJECTNAME) -p 9090:9090
 
+dependencies: ## Start project dependencies
+	docker compose up -d zipkin postgres
+
 compose-build: ## Builds the compose image of the callback-service
 	docker compose --file "$(PROJECTPATH)/docker-compose.yaml" build $(COMPOSE_SERVICE_NAME)
 
@@ -56,3 +59,5 @@ compose-linux: ## Starts docker-compose project for a Linux OS
 
 compose-client: ## Starts docker-compose callback client
 	docker compose up gocallbackclient
+
+compose-local-mac: dependencies go-run ## Startup-workaround to deal with networking MacOS problems when dealing with multiple containers talking to each other
