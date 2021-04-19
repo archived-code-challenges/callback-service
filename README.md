@@ -31,6 +31,10 @@ To start the client service that will query the server each 5 seconds and also p
 
     make client-start
 
+To explore what else you can do with the Makefile:
+
+    make
+
 After a successful execution, the service should be running on port 9090. Hit the endpoint to check that all is running as expected:
 
 - [:9090](http://localhost:9090/)
@@ -40,9 +44,7 @@ Tracing can be found at:
 - [:9411/zipkin/](http://localhost:9411/zipkin/)
 - [:6060/debug/pprof/](http://localhost:6060/debug/pprof/)
 
-To explore what else you can do with the Makefile:
-
-    make
+![zipkin-traces](/doc/zipkin-traces.png)
 
 ## Testing
 
@@ -61,8 +63,8 @@ Integration tests (which require both services running) can be run by typing:
     .
     ├── cmd                     # Entrypoint
     │   ├── callback-service    # Main API
-    │   └── client-service      # client callbacks API
-    ├── doc                     # Documentation, images and helpful files
+    │   └── client-service      # Client API (provided by the task)
+    ├── doc                     # API Documentation, images and helpful files
     └── internal
         ├── handlers            # HTTP layer & integration tests
         ├── middleware
