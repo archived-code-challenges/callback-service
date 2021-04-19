@@ -54,7 +54,11 @@ func (c *Callback) Handle(ctx context.Context, w http.ResponseWriter, r *http.Re
 	}
 
 	// Send Callback slice to Upsert method
-	c.csvc.Upsert(ctx, callbackList)
+	err := c.csvc.Upsert(ctx, callbackList)
+	if err != nil {
+		web.RespondError(ctx, w, err, http.StatusNotAcceptable)
+		return
+	}
 
 	web.Respond(ctx, w, struct{}{}, http.StatusOK)
 }

@@ -23,16 +23,6 @@ var (
 	CallbackSelfDeleteTime = 30 * time.Second
 )
 
-type Callback struct {
-	ID        int64 `gorm:"primary_key;type:bigserial" json:"id"`
-	Online    bool  `gorm:"not null" json:"online"`
-	Timestamp int64 `gorm:"type:bigint;not null" json:"timestamp"`
-}
-
-type callbackService struct {
-	CallbackService
-}
-
 // CallbackService defines a set of methods to be used when dealing when a callback is received.
 type CallbackService interface {
 	// Upsert will start a goroutine function to fetch the status of any Callback provided and then
@@ -52,6 +42,16 @@ type CallbackDB interface {
 	// This function is configured to delete any callback object that is upserted 30 seconds after
 	// its upsertion if its timestamp is from 30 seconds ago.
 	Upsert(context.Context, []Callback) error
+}
+
+type Callback struct {
+	ID        int64 `gorm:"primary_key;type:bigserial" json:"id"`
+	Online    bool  `gorm:"not null" json:"online"`
+	Timestamp int64 `gorm:"type:bigint;not null" json:"timestamp"`
+}
+
+type callbackService struct {
+	CallbackService
 }
 
 func NewCallbackService(db *gorm.DB, callbackServiceURL string, log *log.Logger) CallbackService {
@@ -77,6 +77,8 @@ func (cv *callbackValidator) setTimestamp(c *Callback) {
 	c.Timestamp = time.Now().Unix()
 }
 
+// Upsert checks if the server is reachable, if so, invokes multiple goroutines to check every
+// callback of the given cs slice by calling the Status method.
 func (cv *callbackValidator) Upsert(ctx context.Context, cs []Callback) error {
 	ctx, span := trace.StartSpan(ctx, "models.callbackValidator.Upsert")
 	defer span.End()
@@ -84,6 +86,12 @@ func (cv *callbackValidator) Upsert(ctx context.Context, cs []Callback) error {
 	errChan := make(chan error)
 	done := make(chan bool)
 	var wg sync.WaitGroup
+
+	// Check if the client is reachable
+	_, err := http.Get(cv.serviceURL)
+	if err != nil {
+		return ErrServerNotReachable
+	}
 
 	for _, c := range cs {
 		wg.Add(1)
@@ -129,6 +137,7 @@ func (cv *callbackValidator) Upsert(ctx context.Context, cs []Callback) error {
 	return nil
 }
 
+// Status queries the client server returns if a specific Callback is online or not.
 func (cv *callbackValidator) Status(ctx context.Context, id int64) (Callback, error) {
 	_, span := trace.StartSpan(ctx, "models.callbackValidator.Status")
 	defer span.End()
@@ -160,6 +169,7 @@ type callbackGorm struct {
 	db *gorm.DB
 }
 
+// Inserts one or many Callback(s) into the database. Avoiding any ID conflict.
 func (cg *callbackGorm) Upsert(ctx context.Context, cs []Callback) error {
 	ctx, span := trace.StartSpan(ctx, "callback.Database.Upsert")
 	defer span.End()

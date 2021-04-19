@@ -3,8 +3,9 @@ package models
 // These errors are returned by the services and can be used to provide error codes to the
 // API results.
 const (
-	ErrNotFound         ModelError = "models: not_found, resource not found"
-	ErrInvalidJSONInput ModelError = "models: invalid_json, provided input cannot be parsed"
+	ErrNotFound           ModelError = "models: not_found, resource not found"
+	ErrInvalidJSONInput   ModelError = "models: invalid_json, provided input cannot be parsed"
+	ErrServerNotReachable ModelError = "models: server_connection_error, provided server can't be reached"
 )
 
 // CodeError is an error that returns a string code that can be presented to the API user.
