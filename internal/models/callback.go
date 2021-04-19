@@ -165,7 +165,7 @@ func (cg *callbackGorm) Upsert(ctx context.Context, cs []Callback) error {
 	defer span.End()
 	cg.db.WithContext(ctx)
 
-	err := cg.db.Debug().Clauses(clause.OnConflict{
+	err := cg.db.Clauses(clause.OnConflict{
 		UpdateAll: true, // Update everything on ID conflict.
 	}).Create(&cs).Error
 
@@ -182,7 +182,7 @@ func (cg *callbackGorm) Upsert(ctx context.Context, cs []Callback) error {
 	// Function that will run exactly X seconds after the Callback objects were created and will target them.
 	// Deleting them if their timestamp has not been updated.
 	time.AfterFunc(CallbackSelfDeleteTime, func() {
-		cg.db.Debug().Where("timestamp <= ?", time.Now().Add(-CallbackSelfDeleteTime).Unix()).Delete(Callback{}, bulkDeleteIDs)
+		cg.db.Where("timestamp <= ?", time.Now().Add(-CallbackSelfDeleteTime).Unix()).Delete(Callback{}, bulkDeleteIDs)
 	})
 
 	return nil
