@@ -1,0 +1,55 @@
+{
+	"info": {
+		"_postman_id": "24518cfd-c8ae-4281-a42c-e4d8503ea604",
+		"name": "go-callback-service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/callback",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"object_ids\":[91,10,78,43,65,1,56,86,20,67,21,16,19,15,32,82,75,44,44,6,64,35,42,78,69,15,13,24,16,43,89,95,54,48,72,21,44,55,28,2,69,75,56,45,40,74,33,75,98,39,0,84,48,89,56,98,5,42,91,94,61,9,76,17,4,56,70,44,29,24,37,32,55,12,85,32,61,90,85,84,19,43,35,78,66,65,51,34,82,40,46,64,69,66,7,81,94,60,58,24,19,77,87,89,69,49,19,99,93,94,25,62,57,80,40,74,91,59,31,93,27,11,13,96,48,52,8,15,80,4,21,91,77,55,76,93,64,79,1,59,16,59,43,6,6,48,53,20,55,83,5,32,83,81,97,3,24,46,1]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9090/callback",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"callback"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "(health) /",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		},
+		{
+			"name": "/object/:id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		}
+	]
+}

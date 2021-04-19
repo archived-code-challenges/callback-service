@@ -1,0 +1,23 @@
+{
+    // Configuration file used to set debug modes that can be triggered
+    // from the RUN tab of visual studio code.
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run: CLIENT :9010",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/client-service/",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Run: CALLBACK :9090",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/callback-service/",
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

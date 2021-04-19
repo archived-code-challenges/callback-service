@@ -1,0 +1,11 @@
+# Binaries for programs and plugins
+bin/
+main
+
+# Output of the go coverage tool.
+*.out
+
+## vscode ##
+.vscode/*
+!.vscode/launch.json
+*__debug_bin

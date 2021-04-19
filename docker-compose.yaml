@@ -1,0 +1,74 @@
+version: '3'
+
+networks:
+  shared-network:
+    driver: bridge
+
+services:
+
+  gocallbacksvc:
+      container_name: gocallbacksvc
+      build:
+        context: .
+        dockerfile: ./Dockerfile
+      image: gocallbacksvc:latest # If you specify image as well as build, then, docker-compose names
+      # the built image with the webapp and optional tag specified in image
+      ports:
+        - 9090:9090
+        - 6060:6060
+      depends_on:
+        - zipkin
+        - postgres
+        - gocallbackclient
+      networks:
+        - shared-network
+
+  gocallbackclient:
+      container_name: gocallbackclient
+      build:
+        context: .
+        dockerfile: cmd/client-service/Dockerfile
+      image: gocallbackclient:latest
+      ports:
+        - 9010:9010
+      networks:
+        - shared-network
+
+  # This sidecar allows for the viewing of traces.
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin:2
+    ports:
+      - 9411:9411
+    networks:
+      - shared-network
+
+  postgres_test:
+    container_name: postgres_test
+    image: postgres:13.2-alpine
+    environment:
+      - POSTGRES_USER=gocallbacksvc
+      - POSTGRES_PASSWORD=secret1234
+      - POSTGRES_DB=gocallbacksvc_test
+    ports:
+      - 5433:5432
+    networks:
+      - shared-network
+
+  postgres:
+    container_name: postgres
+    image: postgres:13.2-alpine
+    environment:
+      - POSTGRES_USER=gocallbacksvc
+      - POSTGRES_PASSWORD=secret1234
+      - PGDATA=/var/lib/postgresql/data
+      - POSTGRES_DB=gocallbacksvc
+    ports:
+      - 5432:5432
+    volumes:
+      - fd_pg_data:/var/lib/postgresql/data
+    networks:
+      - shared-network
+
+volumes:
+  fd_pg_data:
