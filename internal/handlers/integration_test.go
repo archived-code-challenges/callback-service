@@ -74,9 +74,22 @@ func TestCallback_Integration(t *testing.T) {
 				tdb.Model(&models.Callback{}).Count(&count)
 				assert.NotZero(t, count, "At least one item should have been created")
 
-				time.Sleep(5 * time.Second) // Give the test some extra time to remove the records
-				tdb.Model(&models.Callback{}).Count(&count)
-				assert.Zero(t, count, "Every item should have been removed after 7 seconds")
+				timeout := time.After(4 + 5 + 5*time.Second) // Giving the test some extra time to remove
+				// the database records: 4s client latency + 5s CallbackSelfDeleteTime // 5s db processing time
+				tick := time.Tick(500 * time.Millisecond)
+				// Keep trying until we're timed out or got a result or got an error
+				for {
+					select {
+					case <-timeout:
+						assert.Zero(t, count, "Timed out: every item should have been removed")
+						return
+					case <-tick:
+						tdb.Model(&models.Callback{}).Count(&count)
+						if count == 0 {
+							break
+						}
+					}
+				}
 			}
 		})
 	}

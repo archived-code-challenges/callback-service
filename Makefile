@@ -30,11 +30,11 @@ go-vendor: ## Updates vendor dependencies
 
 test: ## Runs the tests
 	docker start postgres_test || docker compose up postgres_test -d
-	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go test ./...
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) GOFLAGS="-count=1" go test ./...
 
 test-integration: ## Runs the tests
 	docker start postgres_test || docker compose up postgres_test -d
-	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) go test ./... -tags=integration
+	@GOPATH=$(GOPATH) GOBIN=$(GOBIN) GOFLAGS="-count=1" go test ./... -tags=integration
 
 docker-build: ## Builds the project binary inside a docker image
 	@docker build -t $(PROJECTNAME) .
